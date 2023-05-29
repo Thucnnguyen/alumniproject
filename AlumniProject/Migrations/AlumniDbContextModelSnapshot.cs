@@ -42,6 +42,9 @@ namespace AlumniProject.Migrations
                     b.Property<bool>("Archived")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
 
@@ -101,12 +104,7 @@ namespace AlumniProject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FaceBookPublicity")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FaceBook_url")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullName")
@@ -120,10 +118,6 @@ namespace AlumniProject.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhonePublicity")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -147,6 +141,9 @@ namespace AlumniProject.Migrations
                     b.Property<bool>("Archived")
                         .HasColumnType("bit");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("GradeId")
                         .HasColumnType("int");
 
@@ -159,6 +156,52 @@ namespace AlumniProject.Migrations
                     b.HasIndex("GradeId");
 
                     b.ToTable("AlumniClasse");
+                });
+
+            modelBuilder.Entity("AlumniProject.Entity.AlumniRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("AlumniId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AlumniId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AlumniRole");
+                });
+
+            modelBuilder.Entity("AlumniProject.Entity.AlumniSchool", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("AlumniId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SchoolId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AlumniId");
+
+                    b.HasIndex("SchoolId");
+
+                    b.ToTable("AlumniSchool");
                 });
 
             modelBuilder.Entity("AlumniProject.Entity.AlumniToClass", b =>
@@ -232,6 +275,9 @@ namespace AlumniProject.Migrations
 
                     b.Property<bool>("Archived")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Desciption")
                         .IsRequired()
@@ -326,6 +372,9 @@ namespace AlumniProject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -367,14 +416,13 @@ namespace AlumniProject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("EndYear")
                         .HasColumnType("int");
 
-                    b.Property<string>("SchoolId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SchoolId1")
+                    b.Property<int>("SchoolId")
                         .HasColumnType("int");
 
                     b.Property<int>("StartYear")
@@ -382,7 +430,7 @@ namespace AlumniProject.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SchoolId1");
+                    b.HasIndex("SchoolId");
 
                     b.ToTable("Grade");
                 });
@@ -527,6 +575,28 @@ namespace AlumniProject.Migrations
                     b.ToTable("Post");
                 });
 
+            modelBuilder.Entity("AlumniProject.Entity.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int?>("AlumniId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AlumniId");
+
+                    b.ToTable("Role");
+                });
+
             modelBuilder.Entity("AlumniProject.Entity.School", b =>
                 {
                     b.Property<int>("Id")
@@ -563,6 +633,9 @@ namespace AlumniProject.Migrations
                         .HasMaxLength(2147483647)
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
 
@@ -582,8 +655,11 @@ namespace AlumniProject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("RequestStatus")
-                        .HasColumnType("bit");
+                    b.Property<int>("RequestStatus")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("SubDomain")
                         .IsRequired()
@@ -646,6 +722,44 @@ namespace AlumniProject.Migrations
                         .IsRequired();
 
                     b.Navigation("Grade");
+                });
+
+            modelBuilder.Entity("AlumniProject.Entity.AlumniRole", b =>
+                {
+                    b.HasOne("AlumniProject.Entity.Alumni", "Alumni")
+                        .WithMany("Alumni_Role")
+                        .HasForeignKey("AlumniId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("AlumniProject.Entity.Role", "Role")
+                        .WithMany("Alumni_Role")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Alumni");
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("AlumniProject.Entity.AlumniSchool", b =>
+                {
+                    b.HasOne("AlumniProject.Entity.Alumni", "Alumni")
+                        .WithMany("Alumni_School")
+                        .HasForeignKey("AlumniId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("AlumniProject.Entity.School", "School")
+                        .WithMany("Alumni_School")
+                        .HasForeignKey("SchoolId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Alumni");
+
+                    b.Navigation("School");
                 });
 
             modelBuilder.Entity("AlumniProject.Entity.AlumniToClass", b =>
@@ -735,7 +849,7 @@ namespace AlumniProject.Migrations
                 {
                     b.HasOne("AlumniProject.Entity.School", "School")
                         .WithMany("Grade")
-                        .HasForeignKey("SchoolId1")
+                        .HasForeignKey("SchoolId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -806,9 +920,20 @@ namespace AlumniProject.Migrations
                     b.Navigation("Alumni");
                 });
 
+            modelBuilder.Entity("AlumniProject.Entity.Role", b =>
+                {
+                    b.HasOne("AlumniProject.Entity.Alumni", null)
+                        .WithMany("Role")
+                        .HasForeignKey("AlumniId");
+                });
+
             modelBuilder.Entity("AlumniProject.Entity.Alumni", b =>
                 {
                     b.Navigation("AlumniToClasse");
+
+                    b.Navigation("Alumni_Role");
+
+                    b.Navigation("Alumni_School");
 
                     b.Navigation("Education");
 
@@ -817,6 +942,8 @@ namespace AlumniProject.Migrations
                     b.Navigation("Events");
 
                     b.Navigation("Major");
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("AlumniProject.Entity.AlumniClass", b =>
@@ -834,8 +961,15 @@ namespace AlumniProject.Migrations
                     b.Navigation("NewsTagNews");
                 });
 
+            modelBuilder.Entity("AlumniProject.Entity.Role", b =>
+                {
+                    b.Navigation("Alumni_Role");
+                });
+
             modelBuilder.Entity("AlumniProject.Entity.School", b =>
                 {
+                    b.Navigation("Alumni_School");
+
                     b.Navigation("Event");
 
                     b.Navigation("Fund");

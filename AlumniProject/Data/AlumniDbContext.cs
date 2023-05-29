@@ -18,7 +18,19 @@ public class AlumniDbContext : DbContext
              .HasOne(p => p.Alumni)
              .WithMany(a => a.EventParticipants)
              .OnDelete(DeleteBehavior.NoAction);
-         //   .
+
+        modelBuilder
+             .Entity<AlumniSchool>()
+             .HasOne(p => p.Alumni)
+             .WithMany(a => a.Alumni_School)
+             .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder
+             .Entity<AlumniRole>()
+             .HasOne(p => p.Alumni)
+             .WithMany(a => a.Alumni_Role)
+             .OnDelete(DeleteBehavior.NoAction);
+
 
         // Other configurations...
 
@@ -39,5 +51,8 @@ public class AlumniDbContext : DbContext
     public virtual DbSet<School> School { get; set; }
     public virtual DbSet<AlumniToClass> AlumniToClass { get; set; }
     public virtual DbSet<NewsTagNew> NewsTagNew { get; set; }
+    public virtual DbSet<AlumniSchool> AlumniSchool { get; set; }
+    public virtual DbSet<Role> Role { get; set; }
+    public virtual DbSet<AlumniRole> AlumniRole { get; set; }
 
 }

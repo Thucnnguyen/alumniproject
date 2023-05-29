@@ -24,5 +24,6 @@ public class Event
 
     public virtual Grade Grade { get; set; }
     public virtual Alumni Host { get; set; }
+    public DateTime CreatedAt { get; set; }
     public virtual ICollection<EventParticipant> Participants { get; set; }
 }

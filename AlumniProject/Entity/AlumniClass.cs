@@ -12,6 +12,7 @@ public class AlumniClass
     public int GradeId { get; set; }
     public virtual Grade Grade { get; set; }
     public virtual ICollection<AlumniToClass> AlumniToClasse { get; set; }
+    public DateTime CreatedAt { get; set; }
     public bool Archived { get; set; }
 
 

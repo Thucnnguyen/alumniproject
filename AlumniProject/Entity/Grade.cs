@@ -8,11 +8,11 @@ public class Grade
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
-    public string Code { get; set; }
+    public string Code { get; set; }= String.Empty;
     public int StartYear { get; set; }
     public int EndYear { get; set; }
-    public string SchoolId { get; set; }
-    public bool Archived { get; set; }
-
+    public int SchoolId { get; set; }
+    public bool Archived { get; set; }= true;
+    public DateTime CreatedAt { get; set; }
     public virtual School School { get; set; }
 }

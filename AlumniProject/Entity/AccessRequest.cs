@@ -17,7 +17,7 @@ public class AccessRequest
     public int AlunmniId { get; set; }
     public int AlumniClassId { get; set; }
     public bool Archived { get; set; }
-
+    public DateTime CreatedAt { get; set; }
 
     public virtual AlumniClass AlumniClass { get; set; }
     public virtual Alumni Alumni { get; set; }

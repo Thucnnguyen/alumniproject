@@ -10,6 +10,6 @@ public class Fund
     public int TargetBalance { get; set; }
     public string BackgroundImage { get; set; }
     public bool Archived { get; set; }
-
+    public DateTime CreatedAt { get; set; }
     public virtual School School { get; set; }
 }
