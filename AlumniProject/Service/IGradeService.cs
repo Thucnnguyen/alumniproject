@@ -9,5 +9,8 @@ public interface IGradeService
     public Task<int> CreateGrade(Grade grade);  
     public Task<Grade> UpdateGrade(Grade grade);
     public Task<int> DupplicateGrade (int id);
-    public Task<PagingResultDTO<Grade>> GetGradePagingResults (int pageNo, int pageSize,int schoolId);
+    public Task<PagingResultDTO<GradeDTO>> GetGradePagingResults(int pageNo, int pageSize,int schoolId);
+    public Task<IEnumerable<Grade>> GetAllGradesBySchoolId(int schoolID);
+    public Task<bool> IsExistedGrade(int gradeId);
+    public Task DeleteGrade(int gradeId);
 }

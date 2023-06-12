@@ -73,3 +73,9 @@ C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\bin\Release\net6.0\Google.Api
 C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\bin\Release\net6.0\Google.Apis.Core.dll
 C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\bin\Release\net6.0\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\bin\Release\net6.0\Newtonsoft.Json.dll
+C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\bin\Release\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\bin\Release\net6.0\Microsoft.DotNet.PlatformAbstractions.dll
+C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\bin\Release\net6.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\bin\Release\net6.0\Scrutor.dll
+C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\bin\Release\net6.0\Swashbuckle.AspNetCore.Annotations.dll
+C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\bin\Release\net6.0\Swashbuckle.AspNetCore.Filters.dll

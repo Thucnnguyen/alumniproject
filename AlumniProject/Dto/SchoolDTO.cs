@@ -4,7 +4,6 @@ namespace AlumniProject.Dto;
 
 public class SchoolDTO
 {
-    [Required(ErrorMessage = "Id is required")]
     public int id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
@@ -19,4 +18,5 @@ public class SchoolDTO
     public string Theme { get; set; }
     public DateTime EndTime { get; set; }
     public int Duration { get; set; }
+    public int RequestStatus { get; set; } = 1;
 }

@@ -14,14 +14,17 @@ C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out
 C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Google.Apis.Auth.PlatformServices.dll
 C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Google.Apis.Auth.dll
 C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Google.Apis.Core.dll
+C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Microsoft.Data.SqlClient.dll
+C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Microsoft.DotNet.PlatformAbstractions.dll
 C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Microsoft.EntityFrameworkCore.dll
 C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Microsoft.EntityFrameworkCore.Abstractions.dll
 C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Microsoft.EntityFrameworkCore.Relational.dll
 C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Microsoft.EntityFrameworkCore.SqlServer.dll
 C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Microsoft.Extensions.Caching.Memory.dll
 C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Microsoft.Extensions.DependencyModel.dll
 C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Microsoft.Identity.Client.dll
 C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Microsoft.IdentityModel.JsonWebTokens.dll
 C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Microsoft.IdentityModel.Logging.dll
@@ -31,6 +34,9 @@ C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out
 C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Microsoft.OpenApi.dll
 C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Microsoft.Win32.SystemEvents.dll
 C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Newtonsoft.Json.dll
+C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Scrutor.dll
+C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Swashbuckle.AspNetCore.Annotations.dll
+C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Swashbuckle.AspNetCore.Filters.dll
 C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\PC\Desktop\PE\AlumniProject\AlumniProject\obj\Release\net6.0\PubTmp\Out\Swashbuckle.AspNetCore.SwaggerUI.dll

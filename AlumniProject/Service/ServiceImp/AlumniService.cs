@@ -1,6 +1,7 @@
 ﻿using AlumniProject.Data.Repostitory;
 using AlumniProject.Dto;
 using AlumniProject.Entity;
+using AlumniProject.ExceptionHandler;
 
 namespace AlumniProject.Service.ServiceImp
 {
@@ -13,10 +14,15 @@ namespace AlumniProject.Service.ServiceImp
             _repo = repo;
         }
 
-        public Task<int> AddAlumni(Alumni alumni)
+        public async Task<int> AddAlumni(Alumni newAlumni)
         {
-            var isSuccess = _repo.CreateAsync(alumni);
-            return isSuccess;
+            var alumni = await GetAlumniByEmail(newAlumni.Email);
+            if(alumni != null)
+            {
+                throw new ConflictException("Alumni was existed with email: "+newAlumni.Email);
+            }
+            var newAlumniId = await _repo.CreateAsync(newAlumni);
+            return newAlumniId;
         }
 
         public async Task<bool> DeleteById(int id)
@@ -38,13 +44,19 @@ namespace AlumniProject.Service.ServiceImp
 
         public async Task<Alumni> GetAlumniByEmail(string email)
         {
-            var alumni = await _repo.GetAlumniByEmail(email);
+            var alumni = await _repo.FindOneByCondition(a => a.Email == email && a.Archived == true);
             return alumni;
         }
 
         public async Task<Alumni> GetById(int id)
         {
-            var alumni = await _repo.GetByIdAsync(id);
+            var alumni = await _repo.GetByIdAsync(a => a.Id == id, a=> a.Archived == true);
+            return alumni;
+        }
+
+        public async Task<Alumni> GetTenantBySchoolId(int schoolId)
+        {
+            var alumni = await _repo.FindOneByCondition(a => a.schoolId == schoolId && a.IsOwner == true && a.Archived == true);
             return alumni;
         }
 

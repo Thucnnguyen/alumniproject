@@ -11,5 +11,6 @@ namespace AlumniProject.Service
         Task<Alumni> UpdateAlumni(Alumni alumni);
         Task<int> AddAlumni(Alumni alumni);
         Task<Alumni> GetAlumniByEmail(string email); 
+        Task<Alumni> GetTenantBySchoolId(int schoolId);
     }
 }

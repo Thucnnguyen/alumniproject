@@ -8,6 +8,6 @@ public class AlumniToClass
 
     public virtual Alumni Alumni { get; set; }
     public virtual AlumniClass Class { get; set; }
-    public bool Archived { get; set; }
+    public bool Archived { get; set; } = true;
 
 }

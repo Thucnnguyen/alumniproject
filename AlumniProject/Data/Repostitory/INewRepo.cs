@@ -2,7 +2,7 @@
 
 namespace AlumniProject.Data.Repostitory
 {
-    public interface INewRepo: IRepositoryBase<New>
+    public interface INewRepo: IRepositoryBase<News>
     {
     }
 }

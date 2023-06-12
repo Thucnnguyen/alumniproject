@@ -2,7 +2,7 @@
 
 namespace AlumniProject.Data.Repostitory.RepositoryImp;
 
-public class EventRepo : RepositoryBase<Event>, IEventRepo
+public class EventRepo : RepositoryBase<Events>, IEventRepo
 {
     public EventRepo(AlumniDbContext context) : base(context)
     {

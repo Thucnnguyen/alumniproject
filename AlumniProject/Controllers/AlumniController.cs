@@ -1,80 +1,158 @@
 ﻿using AlumniProject.Data;
 using AlumniProject.Dto;
 using AlumniProject.Entity;
+using AlumniProject.ExceptionHandler;
 using AlumniProject.Service;
+using AlumniProject.Service.ServiceImp;
+using AlumniProject.Ultils;
 using AutoMapper;
 using FirebaseAdmin.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace AlumniProject.Controllers
 {
-    [Route("api/alumnis")]
+    [Route("api")]
     [ApiController]
     public class AlumniController : ControllerBase
     {
-        IAlumniService service;
-        IMapper mapper;
-        public AlumniController(IAlumniService alumniService, IMapper mapper)
+        private readonly IAlumniService service;
+        private readonly IConfiguration _configuration;
+        private readonly IGradeService _gradeService;
+        private readonly IRoleService _roleService;
+        private readonly IMapper mapper;
+        private readonly TokenUltil tokenUltil;
+
+        public AlumniController(IAlumniService alumniService, IMapper mapper, IConfiguration configuration, IGradeService gradeService, IRoleService roleService)
         {
             this.service = alumniService;
             this.mapper = mapper;
+            this._configuration = configuration;
+            this._gradeService = gradeService;
+            this._roleService = roleService;
+            tokenUltil = new TokenUltil();
         }
-        [HttpGet]
-        public async Task<ActionResult<PagingResultDTO<AlumniDTO>>> GetAlumni([FromQuery]int PageNo=1,[FromQuery] int PageSize=10)
-        {
-            PagingResultDTO<Alumni> alumniList = await service.GetAll(PageNo,PageSize);
-            PagingResultDTO<AlumniDTO> alumniDTOs = new PagingResultDTO<AlumniDTO>
-            {
-                Items = alumniList.Items.Select(a => mapper.Map<AlumniDTO>(a)).ToList(),
-                CurrentPage = alumniList.CurrentPage,
-                PageSize = alumniList.PageSize,
-                TotalItems = alumniList.TotalItems
-            };
-            return Ok(alumniDTOs);
-        }
+        /* [HttpGet]
+         public async Task<ActionResult<PagingResultDTO<AlumniDTO>>> GetAlumni([FromQuery]int PageNo=1,[FromQuery] int PageSize=10)
+         {
+             PagingResultDTO<Alumni> alumniList = await service.GetAll(PageNo,PageSize);
+             PagingResultDTO<AlumniDTO> alumniDTOs = new PagingResultDTO<AlumniDTO>
+             {
+                 Items = alumniList.Items.Select(a => mapper.Map<AlumniDTO>(a)).ToList(),
+                 CurrentPage = alumniList.CurrentPage,
+                 PageSize = alumniList.PageSize,
+                 TotalItems = alumniList.TotalItems
+             };
+             return Ok(alumniDTOs);
+         }*/
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Alumni>> GetAlumniById([FromRoute] int id)
+        [HttpGet("alumnis/{id}")]
+        public async Task<ActionResult<AlumniDTO>> GetAlumniById([FromRoute] int id)
         {
             var alumni = await service.GetById(id);
-            if(alumni == null)
+            if (alumni == null)
             {
                 return NotFound("Alumni not found with ID: " + id);
             }
             return Ok(mapper.Map<AlumniDTO>(alumni));
         }
-
-       /* [HttpPost]
-        public async Task<ActionResult<bool>> AddAlumni([FromBody] AlumniDTO alumniDTO)
+        /*[HttpPost("alumnis/login")]
+        public async Task<ActionResult<string>> login([FromBody] GoogleSignInRequest request)
         {
-            if (!ModelState.IsValid)
+            var firebaseToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(request.IdToken);
+            string email = firebaseToken.Claims["email"].ToString();
+            if (email != null)
             {
-                var errorMessages = ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList();
+                var alumni = await service.GetAlumniByEmail(email);
+                if (alumni == null)
+                {
+                    return NotFound("Alumni not found with email: " + email);
+                }
+                var tokenHelper = new TokenHelper(_configuration, _gradeService, _roleService);
+                var token = await tokenHelper.CreateToken(alumni);
+                return Ok(token);
 
-                return BadRequest(string.Join(", ", errorMessages));
             }
-            else
-            {
-                var alumni = mapper.Map<Alumni>(alumniDTO);
-                var isSuccess = await service.AddAlumni(alumni);
-                return Ok(isSuccess);
-            }
+            return BadRequest("Firebase Token has email not valid");
+
         }*/
+        [HttpPost("alumnis/login")]
+        public async Task<ActionResult<string>> login([FromQuery] string email)
+        {
+            try
+            {
+                var alumni = await service.GetAlumniByEmail(email);
+                if (alumni == null)
+                {
+                    return NotFound("Alumni not found with email: " + email);
+                }
+                var tokenHelper = new TokenHelper(_configuration, _gradeService, _roleService);
+                var token = await tokenHelper.CreateToken(alumni);
+                return Ok(token);
+            }
+            catch (Exception e)
+            {
+                if (e is NotFoundException)
+                {
+                    return NotFound(e.Message);
+                }
+                else if (e is BadRequestException)
+                {
+                    return BadRequest(e.Message);
+                }
+                else
+                {
+                    return Conflict(e.Message);
+                }
+            }
+                
+        }
 
-        [HttpPut]
+        [HttpPost("tenant/register")]
+        public async Task<ActionResult<int>> registerTenant([FromBody] TenantRegisterDTO tenantRegisterDTO)
+        {
+            try
+            {
+                
+
+                Alumni tenantAdd = mapper.Map<Alumni>(tenantRegisterDTO);
+                tenantAdd.RoleId = (int)RoleEnum.alumni;
+                var tenantID = await service.AddAlumni(tenantAdd);
+                return Ok(tenantID);
+            }
+            catch (Exception e)
+            {
+                if (e is NotFoundException)
+                {
+                    return NotFound(e.Message);
+                }
+                else if (e is BadRequestException)
+                {
+                    return BadRequest(e.Message);
+                }
+                else
+                {
+                    return Conflict(e.Message);
+                }
+            }
+
+        }
+
+        [HttpPut("alumnis"), Authorize(Roles ="alumni,tenant")]
         public async Task<ActionResult<AlumniDTO>> UpdateAlumni([FromBody] AlumniUpdateDTO alumniUpdateDTO)
         {
-            var alumni = await service.GetById(alumniUpdateDTO.Id);
+            var alumniIdClaims = tokenUltil.GetClaimByType(User, "alumniId");
+            var alumniId = int.Parse(alumniIdClaims.Value);
+            var alumni = await service.GetById(alumniId);
             if (alumni == null)
             {
-                return NotFound("Alumni not found with ID: " + alumniUpdateDTO.Id);
+                return NotFound("Alumni not found with ID: " + alumniId);
             }
-
-            var updateAlumni = await service.UpdateAlumni(mapper.Map<Alumni>(alumniUpdateDTO));
+            Alumni alumniUpdate = mapper.Map<Alumni>(alumniUpdateDTO);
+            alumniUpdate.Id = alumniId;
+            var updateAlumni = await service.UpdateAlumni(alumniUpdate);
             return Ok(mapper.Map<AlumniDTO>(updateAlumni));
 
         }

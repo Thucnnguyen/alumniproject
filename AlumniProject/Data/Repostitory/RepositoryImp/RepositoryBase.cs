@@ -1,6 +1,7 @@
 ﻿using AlumniProject.Dto;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace AlumniProject.Data.Repostitory.RepositoryImp
 {
@@ -10,6 +11,19 @@ namespace AlumniProject.Data.Repostitory.RepositoryImp
         public RepositoryBase(AlumniDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<int> CountByCondition(params Expression<Func<T, bool>>[] filters)
+        {
+            var query = _context.Set<T>().AsQueryable();
+
+            foreach (var filter in filters)
+            {
+                query = query.Where(filter);
+            }
+            var entities = await query.FirstOrDefaultAsync();
+            var count = await query.CountAsync();
+            return count;
         }
 
         public async Task<int> CreateAsync(T entity)
@@ -27,11 +41,11 @@ namespace AlumniProject.Data.Repostitory.RepositoryImp
             await _context.SaveChangesAsync();
         }
 
-        public async Task<T> FindOneByCondition(Expression<Func<T, bool>> filter)
+        public async Task<T> FindOneByCondition(params Expression<Func<T, bool>>[] filters)
         {
             var query = _context.Set<T>().AsQueryable();
 
-            if (filter != null)
+            foreach (var filter in filters)
             {
                 query = query.Where(filter);
             }
@@ -40,12 +54,12 @@ namespace AlumniProject.Data.Repostitory.RepositoryImp
 
         }
 
-        public async Task<PagingResultDTO<T>> GetAllByConditionAsync(int pageNo, int pageSize, Expression<Func<T, bool>> filter)
+        public async Task<PagingResultDTO<T>> GetAllByConditionAsync(int pageNo, int pageSize,params Expression<Func<T, bool>>[] filters)
         {
             var skipAmount = (pageNo - 1) * pageSize;
             var query = _context.Set<T>().AsQueryable();
 
-            if (filter != null)
+            foreach (var filter in filters)
             {
                 query = query.Where(filter);
             }
@@ -64,9 +78,30 @@ namespace AlumniProject.Data.Repostitory.RepositoryImp
 
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<IEnumerable<T>> GetAllByConditionAsync(params Expression<Func<T, bool>>[] filters)
         {
-            return await _context.Set<T>().FindAsync(id);
+            var query = _context.Set<T>().AsQueryable();
+
+            foreach (var filter in filters)
+            {
+                query = query.Where(filter);
+            }
+
+            var entities = await query.ToListAsync();
+           
+            return entities;
+        }
+
+        public async Task<T> GetByIdAsync(params Expression<Func<T, bool>>[] filters)
+        {
+            var query = _context.Set<T>().AsQueryable();
+
+            foreach (var filter in filters)
+            {
+                query = query.Where(filter);
+            }
+            
+            return await query.FirstOrDefaultAsync();
         }
 
         public async Task UpdateAsync(T entity)
@@ -77,14 +112,7 @@ namespace AlumniProject.Data.Repostitory.RepositoryImp
 
             await _context.SaveChangesAsync();
         }
-        //public async Task UpdateWithProperties(T entity)
-        //{
-        //    _context.Set<T>().Update(entity);
-
-        //    await _context.SaveChangesAsync();
-
-
-        //}
+        
 
     }
 }

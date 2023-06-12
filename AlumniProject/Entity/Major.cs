@@ -13,7 +13,7 @@ public class Major
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public int AlumniId { get; set; }
-    public bool Archived { get; set; }
+    public bool Archived { get; set; } = true;
 
     public virtual Alumni Alumni { get; set; }
 

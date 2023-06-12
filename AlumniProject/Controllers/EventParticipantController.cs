@@ -1,0 +1,91 @@
+﻿using AlumniProject.Dto;
+using AlumniProject.Entity;
+using AlumniProject.ExceptionHandler;
+using AlumniProject.Service;
+using AlumniProject.Service.ServiceImp;
+using AlumniProject.Ultils;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace AlumniProject.Controllers
+{
+    [Route("api")]
+    [ApiController]
+    public class EventParticipantController : ControllerBase
+    {
+        private readonly IMapper _mapper;
+        private readonly IEventParticipantService _eventParticipantService;
+        private readonly TokenUltil tokenUltil;
+
+        public EventParticipantController(IMapper mapper, IEventParticipantService eventParticipantService)
+        {
+            _mapper = mapper;
+            _eventParticipantService = eventParticipantService;
+            tokenUltil = new TokenUltil();
+        }
+
+        [HttpPost("alumni/events/{eventId}")]
+        [Authorize(Roles = "alumni,tenant")]
+        public async Task<ActionResult<int>> EnrollEvent([FromRoute] int eventId)
+        {
+            try
+            {
+                var alumniId = tokenUltil.GetClaimByType(User, Constant.AlumniId).Value;
+
+                var eventParticipant = new EventParticipant();
+
+                eventParticipant.EventId = eventId;
+                eventParticipant.AlumniId = int.Parse(alumniId);
+                var eventParticipantId = await _eventParticipantService.createEventParticipant(eventParticipant);
+
+                return Ok(eventParticipantId);
+            }
+            catch (Exception e)
+            {
+                if (e is NotFoundException)
+                {
+                    return NotFound(e.Message);
+                }
+                else if (e is ConflictException)
+                {
+                    return Conflict(e.Message);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+                }
+            }
+        }
+        
+        [HttpDelete("alumni/events/{eventId}")]
+        [Authorize(Roles = "alumni,tenant")]
+        public async Task<ActionResult<string>> DeleteEventParticipant([FromRoute] int eventId)
+        {
+            try
+            {
+                var participantId = tokenUltil.GetClaimByType(User, Constant.AlumniId).Value;
+
+                await _eventParticipantService.DeleteEventParticipant(eventId, int.Parse(participantId));
+
+                return Ok($"Deleted event participant with ID: {participantId}");
+            }
+            catch (Exception e)
+            {
+                if (e is NotFoundException)
+                {
+                    return NotFound(e.Message);
+                }
+                else if (e is UnauthorizedAccessException)
+                {
+                    return Unauthorized(e.Message);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+                }
+            }
+        }
+    }
+}

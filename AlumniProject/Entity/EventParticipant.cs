@@ -11,9 +11,9 @@ public class EventParticipant
     public int Id { get; set; }
     public int EventId { get; set; }
     public int AlumniId { get; set; }
-    public bool Archived { get; set; }
+    public bool Archived { get; set; } = true;
 
 
-    public virtual Event Event { get; set; }
+    public virtual Events Event { get; set; }
     public virtual Alumni Alumni { get; set; }
 }

@@ -9,5 +9,5 @@ public class Role
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
     public string Name { get; set; }
-    public virtual ICollection<AlumniRole> Alumni_Role { get; set; }
+    public virtual ICollection<Alumni> Alumni { get; set; }
 }

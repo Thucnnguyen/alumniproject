@@ -21,4 +21,5 @@ public class SchoolAddDTO
     public int Duration { get; set; }
     [Required(ErrorMessage = "Duration is required")]
     public string EvidenceUrl { get; set; }
+
 }

@@ -10,10 +10,11 @@ public class AlumniClass
     public int Id { get; set; }
     public string Name { get; set; }
     public int GradeId { get; set; }
-    public virtual Grade Grade { get; set; }
-    public virtual ICollection<AlumniToClass> AlumniToClasse { get; set; }
     public DateTime CreatedAt { get; set; }
-    public bool Archived { get; set; }
+    public bool Archived { get; set; } = true;
+    public virtual Grade Grade { get; set; }
+    public virtual ICollection<AccessRequest> AccessRequests { get; set; }
+    public virtual ICollection<AlumniToClass> AlumniToClasses { get; set; }
 
 
 }

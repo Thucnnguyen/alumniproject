@@ -22,16 +22,18 @@ public class School
     public string Theme { get; set; } = String.Empty;
     public int RequestStatus { get; set; } = 1;
     public DateTime StartTime { get; set; }
-
     public DateTime EndTime { get; set; }
     public string EvidenceUrl { get; set; }
     public int Duration { get; set; }
     public bool Archived { get; set; }=true;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
 
+    public virtual ICollection<Alumni> alumni { get; set; }
     public virtual ICollection<Grade> Grade { get; set; }
     public virtual ICollection<Post> Post { get; set; }
-    public virtual ICollection<New> New { get; set; }
-    public virtual ICollection<Event> Event { get; set; }
+    public virtual ICollection<News> New { get; set; }
+    public virtual ICollection<Events> Event { get; set; }
     public virtual ICollection<Fund> Fund { get; set; }
-    public virtual ICollection<AlumniSchool> Alumni_School { get; set; }
+
+    public virtual ICollection<AccessRequest> AccessRequests { get; set; }
 }

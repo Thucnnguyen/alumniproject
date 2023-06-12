@@ -2,6 +2,6 @@
 
 namespace AlumniProject.Data.Repostitory;
 
-public interface IEventRepo :IRepositoryBase<Event>
+public interface IEventRepo :IRepositoryBase<Events>
 {
 }

@@ -10,8 +10,7 @@ public class NewsTagNew
     public int Id { get; set; }
     public int NewsId { get; set; }
     public int TagsId { get; set; }
-    public bool Archived { get; set; }
-
-    public virtual New News { get; set; }
+    public bool Archived { get; set; } = true;
+    public virtual News News { get; set; }
     public virtual TagsNew Tags { get; set; }
 }

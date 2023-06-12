@@ -9,7 +9,6 @@ namespace AlumniProject.Dto
         public int StartYear { get; set; }
         [Required(ErrorMessage = "EndYear is required")]
         public int EndYear { get; set; }
-        [Required(ErrorMessage = "SchoolId is required")]
-        public int SchoolId { get; set; }
+        
     }
 }

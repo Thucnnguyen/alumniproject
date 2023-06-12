@@ -13,6 +13,7 @@ public class Grade
     public int EndYear { get; set; }
     public int SchoolId { get; set; }
     public bool Archived { get; set; }= true;
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+
     public virtual School School { get; set; }
 }
