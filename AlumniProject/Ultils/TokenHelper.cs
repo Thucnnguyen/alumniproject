@@ -29,7 +29,6 @@ namespace AlumniProject.Ultils
                 new Claim(Constant.AlumniId, alumni.Id.ToString()),
                 new Claim(Constant.SchoolId,schoolIdValue),
                 new Claim(ClaimTypes.Role, role.Name)
-
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(

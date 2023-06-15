@@ -82,7 +82,7 @@ namespace AlumniProject.Controllers
                 }
                 var schoolId = tokenUltil.GetClaimByType(User, Constant.SchoolId).Value;
                 var EventsList = await _newsService.GetLatestNewsBySchoolId(size, int.Parse(schoolId));
-                var EventsDTOList = EventsList.Select(e => _mapper.Map<EventsDTO>(e)).ToList();
+                var EventsDTOList = EventsList.Select(e => _mapper.Map<NewsDTO>(e)).ToList();
 
                 return Ok(EventsDTOList);
             }

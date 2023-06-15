@@ -33,6 +33,7 @@ namespace AlumniProject.Controllers
             try
             {
                 var alumniId = tokenUltil.GetClaimByType(User, Constant.AlumniId).Value;
+                var schoolId = tokenUltil.GetClaimByType(User, Constant.SchoolId).Value;
 
                 var eventParticipant = new EventParticipant();
 
@@ -85,6 +86,27 @@ namespace AlumniProject.Controllers
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
                 }
+            }
+        }
+        [HttpGet("alumni/events/{eventId}/participants")]
+        [Authorize(Roles = "alumni,tenant")]
+        public async Task<ActionResult<bool>> GetEventParticipant([FromRoute] int eventId)
+        {
+            try
+            {
+                var alumniId = tokenUltil.GetClaimByType(User, Constant.AlumniId).Value;
+                var isParticipant = await _eventParticipantService.isAccess(eventId, int.Parse(alumniId));
+
+                if (isParticipant == false)
+                {
+                    return NotFound($"Event participant with AlumniId: {alumniId} and EventId: {eventId} not found.");
+                }
+
+                return Ok(isParticipant);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }
     }

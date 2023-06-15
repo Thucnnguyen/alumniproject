@@ -72,9 +72,7 @@ namespace AlumniProject.Controllers
         }
         [HttpGet("alumni/grades")]
         public async Task<ActionResult<IEnumerable<GradeDTO>>> GetGradesForAlumni(
-            [FromQuery] int SchoolId,
-            [FromQuery, Range(1, int.MaxValue)] int pageNo = 1,
-            [FromQuery, Range(1, int.MaxValue)] int pageSize = 10
+            [FromQuery] int SchoolId
             )
         {
             try
