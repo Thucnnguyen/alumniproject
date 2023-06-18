@@ -82,34 +82,35 @@ namespace AlumniProject.Controllers
 
         }*/
         [HttpPost("alumnis/login")]
-        public async Task<ActionResult<string>> login([FromQuery] string token)
+        public async Task<ActionResult<string>> login([FromQuery] string requestToken)
         {
             var tokenHelper = new TokenHelper(_configuration, _gradeService, _roleService);
-
+            var user = tokenHelper.DecodeJwtToken(requestToken);
             try
             {
-                //var alumni = await service.GetAlumniByEmail("");
-                tokenHelper.DecodeJwtToken(token);
-                //var token = await tokenHelper.CreateToken(alumni);
-                return Ok("");
+                
+                
+                var alumni = await service.GetAlumniByEmail(user.Email);
+                var token = await tokenHelper.CreateToken(alumni);
+                return Ok("Success!");
             }
             catch (Exception e)
             {
                 if (e is NotFoundException)
                 {
                     return NotFound(e.Message);
-                    //Alumni newAlumni = new Alumni()
-                    //{
-                    //    FullName = "",
-                    //    Email = email,
-                    //    Phone = "",
-                    //    RoleId = (int)RoleEnum.alumni,
-                    //};
+                    Alumni newAlumni = new Alumni()
+                    {
+                        FullName = "",
+                        Email = user.Email,
+                        Phone = "",
+                        RoleId = (int)RoleEnum.alumni,
+                    };
 
-                    //var newAlumniID = await service.AddAlumni(newAlumni);
-                    //var alumni = await service.GetById(newAlumniID);
-                    //var token = await tokenHelper.CreateToken(alumni);
-                    //return token;
+                    var newAlumniID = await service.AddAlumni(newAlumni);
+                    var alumni = await service.GetById(newAlumniID);
+                    var token = await tokenHelper.CreateToken(alumni);
+                    return token;
 
                 }
                 else if (e is BadRequestException)

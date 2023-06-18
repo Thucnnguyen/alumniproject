@@ -28,7 +28,8 @@ namespace AlumniProject.Ultils
             {
                 new Claim(Constant.AlumniId, alumni.Id.ToString()),
                 new Claim(Constant.SchoolId,schoolIdValue),
-                new Claim(ClaimTypes.Role, role.Name)
+                new Claim(ClaimTypes.Role, role.Name),
+                new Claim(ClaimTypes.Email, alumni.Email.ToString())
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
@@ -46,37 +47,50 @@ namespace AlumniProject.Ultils
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
             return jwt;
         }
-        public void DecodeJwtToken(string jwtToken)
+        public Alumni DecodeJwtToken(string jwtToken)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.ReadJwtToken(jwtToken);
+            var email = token.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+            var picture = token.Claims.FirstOrDefault(c => c.Type == "picture")?.Value;
+            var name = token.Claims.FirstOrDefault(c => c.Type == "name")?.Value;;
 
-            // Set the token validation parameters
-            var validationParameters = new TokenValidationParameters
+            var alumni = new Alumni
             {
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("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")) // Replace with your secret key
+                Email = email,
+                Avatar_url = picture,
+                FullName = name
             };
 
-            try
-            {
-                // Decode and validate the JWT token
-                var claimsPrincipal = tokenHandler.ValidateToken(jwtToken, validationParameters, out var validatedToken);
+            return alumni;
 
-                // Access the claims from the token
-                var claims = claimsPrincipal.Claims;
+            
+        //    // Set the token validation parameters
+        //    var validationParameters = new TokenValidationParameters
+        //    {
+        //        ValidateIssuer = false,
+        //        ValidateAudience = false,
+        //        ValidateIssuerSigningKey = true,
+        //        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("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")!) // Replace with your secret key
+        //};
 
-                foreach (var claim in claims)
-                {
-                    Console.WriteLine($"{claim.Type}: {claim.Value}");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Failed to decode JWT token: {ex.Message}");
-            }
+        //    try
+        //    {
+        //        // Decode and validate the JWT token
+        //        var claimsPrincipal = tokenHandler.ValidateToken(jwtToken, validationParameters, out var validatedToken);
+
+        //        // Access the claims from the token
+        //        var claims = claimsPrincipal.Claims;
+
+        //        foreach (var claim in claims)
+        //        {
+        //            Console.WriteLine($"{claim.Type}: {claim.Value}");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"Failed to decode JWT token: {ex.Message}");
+        //    }
         }
 
     }
