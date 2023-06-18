@@ -8,6 +8,8 @@ using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
@@ -24,6 +26,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContextPool<AlumniDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("userDb"))
 );
+builder.Services.AddTransient<RedisService>(provider =>
+{
+    var configuration = provider.GetRequiredService<IConfiguration>();
+    return new RedisService(configuration);
+    });
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddTransient<IAlumniService, AlumniService>();
 builder.Services.AddTransient<ISchoolService, SchoolService>();
@@ -41,6 +48,7 @@ builder.Services.AddTransient<ITagNewsService, TagNewsService>();
 builder.Services.AddTransient<IPostService, PostService>();
 builder.Services.AddTransient<IAlumniRequestService, AccessRequestService>();
 builder.Services.AddTransient<IRoleService, RoleService>();
+
 
 builder.Services.AddTransient<IAlumniClassRepo, AlumniClassRepo>();
 builder.Services.AddTransient<IAlumniRepo, AlumniRepo>();
@@ -74,6 +82,8 @@ builder.Services.AddTransient<Lazy<ITagNewsService>>(provider => new Lazy<ITagNe
 builder.Services.AddTransient<Lazy<IPostService>>(provider => new Lazy<IPostService>(provider.GetRequiredService<IPostService>));
 builder.Services.AddTransient<Lazy<IAlumniRequestService>>(provider => new Lazy<IAlumniRequestService>(provider.GetRequiredService<IAlumniRequestService>));
 builder.Services.AddTransient<Lazy<IRoleService>>(provider => new Lazy<IRoleService>(provider.GetRequiredService<IRoleService>));
+
+//builder.Services.AddAuthentication().AddGoogle()
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

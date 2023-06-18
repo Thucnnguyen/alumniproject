@@ -16,7 +16,7 @@ namespace AlumniProject.Controllers
     [ApiController]
     public class PostController : ControllerBase
     {
-        private readonly IPostService _postService;
+       /* private readonly IPostService _postService;
         private readonly IMapper _mapper;
         private readonly TokenUltil tokenUltil;
 
@@ -187,6 +187,6 @@ namespace AlumniProject.Controllers
                     return Conflict(e.Message);
                 }
             }
-        }
+        }*/
     }
 }

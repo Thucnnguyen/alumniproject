@@ -16,8 +16,8 @@ namespace AlumniProject.Service.ServiceImp
 
         public async Task<int> AddAlumni(Alumni newAlumni)
         {
-            var alumni = await GetAlumniByEmail(newAlumni.Email);
-            if(alumni != null)
+            var alumni = await _repo.FindOneByCondition(a => a.Email == newAlumni.Email && a.Archived == true);
+            if (alumni != null)
             {
                 throw new ConflictException("Alumni was existed with email: "+newAlumni.Email);
             }
@@ -45,12 +45,20 @@ namespace AlumniProject.Service.ServiceImp
         public async Task<Alumni> GetAlumniByEmail(string email)
         {
             var alumni = await _repo.FindOneByCondition(a => a.Email == email && a.Archived == true);
+            if (alumni == null)
+            {
+                throw new NotFoundException("Alumni not found with email: " + email);
+            }
             return alumni;
         }
 
         public async Task<Alumni> GetById(int id)
         {
             var alumni = await _repo.GetByIdAsync(a => a.Id == id, a=> a.Archived == true);
+            if(alumni == null)
+            {
+                throw new NotFoundException("Alumni not found with id: " + id);
+            }
             return alumni;
         }
 

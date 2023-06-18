@@ -93,13 +93,16 @@ namespace AlumniProject.Controllers
                 }
                 var alumniId = tokenUltil.GetClaimByType(User, Constant.AlumniId).Value;
                 var schoolId = tokenUltil.GetClaimByType(User, Constant.SchoolId).Value;
-
+                if(int.Parse(schoolId) == -1)
+                {
+                    return Ok(new PagingResultDTO<EventsDTO>());
+                }
                 if (User.IsInRole("alumni"))
                 {
 
                     var events = await _eventService.GetEventsByAlumniId(pageNo, pageSize, int.Parse(alumniId), int.Parse(schoolId));
 
-                    var eventsDTO = events.Items.Select(e => _mapper.Map<EventsDTO>(e)).ToList();
+                    var eventsDTO = events.Items != null ? events.Items.Select(e => _mapper.Map<EventsDTO>(e)).ToList() : new List<EventsDTO>(); ;
                     var result = new PagingResultDTO<EventsDTO>()
                     {
                         CurrentPage = events.CurrentPage,
@@ -158,6 +161,7 @@ namespace AlumniProject.Controllers
                 }
                 var alumniId = tokenUltil.GetClaimByType(User, Constant.AlumniId).Value;
                 var schoolId = tokenUltil.GetClaimByType(User, Constant.SchoolId).Value;
+                
                 if (User.IsInRole("alumni"))
                 {
                     var events = await _eventService.GetLatestEvent(size, int.Parse(alumniId), int.Parse(schoolId));
@@ -167,7 +171,7 @@ namespace AlumniProject.Controllers
                 if (User.IsInRole("tenant"))
                 {
                     var events = await _eventService.GetLatestEvent(size, int.Parse(schoolId));
-                    var eventsDTO = events.Select(e => _mapper.Map<EventsDTO>(e)).ToList();
+                    var eventsDTO = events != null ? events.Select(e => _mapper.Map<EventsDTO>(e)).ToList() : new List<EventsDTO>();
                     return Ok(eventsDTO);
                 }
                 return Ok(new List<EventsDTO>());
@@ -205,6 +209,7 @@ namespace AlumniProject.Controllers
                 {
                     return BadRequest(string.Join(", ", errorMessages));
                 }
+
                 var alumniId = tokenUltil.GetClaimByType(User, Constant.AlumniId).Value;
                 var events = await _eventService.GetEventParticipant(pageNo, pageSize, int.Parse(alumniId));
                 var eventsDTO = events.Items.Select(e => _mapper.Map<EventsDTO>(e)).ToList();

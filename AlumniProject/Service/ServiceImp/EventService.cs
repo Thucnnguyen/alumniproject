@@ -15,14 +15,14 @@ namespace AlumniProject.Service.ServiceImp
         private readonly Lazy<IGradeService> _gradeService;
         private readonly Lazy<IAlumniToClassService> _alumniToClassService;
         private readonly Lazy<IEventParticipantService> _eventParticipantService;
-
+        private readonly RedisService _redisService;
 
         private IEventRepo _repo;
         public EventService(Lazy<IAlumniService> alumniService, IEventRepo repo,
             Lazy<IGradeService> gradeService,
             Lazy<IAlumniToClassService> alumniToClassService,
             Lazy<IClassService> classService,
-            Lazy<IEventParticipantService> eventParticipantService)
+            Lazy<IEventParticipantService> eventParticipantService, RedisService redisService)
         {
             _alumniService = alumniService;
             _repo = repo;
@@ -30,6 +30,7 @@ namespace AlumniProject.Service.ServiceImp
             _alumniToClassService = alumniToClassService;
             _classService = classService;
             _eventParticipantService = eventParticipantService;
+            _redisService = redisService;
         }
 
         public async Task<int> CreateEvent(Events events)
@@ -66,16 +67,27 @@ namespace AlumniProject.Service.ServiceImp
 
         public async Task<Events> GetEventsById(int eventsId)
         {
+            var cachedEvent = await _redisService.GetObjectAsync<Events>("Event:" + eventsId.ToString());
+            if (cachedEvent != null)
+            {
+                return cachedEvent;
+            }
             var events = await _repo.GetByIdAsync(e => e.Id == eventsId && e.Archived == true);
             if (events == null)
             {
                 throw new NotFoundException("Event not found with id: " + eventsId);
             }
+            await _redisService.SetObjectAsync<Events>("Event:" + events.Id, events);
             return events;
         }
 
         public async Task<PagingResultDTO<Events>> GetEventsByAlumniId(int pageNo, int pageSize, int alumniId, int schoolId)
         {
+            var cachedEvent = await _redisService.GetObjectAsync<PagingResultDTO<Events>>("Event:AlumniId:" + alumniId.ToString());
+            if (cachedEvent != null)
+            {
+                return cachedEvent;
+            }
             var classId = await _alumniToClassService.Value.GetClassIdByAlumniId(alumniId);
             var gradeIdList = new List<int?>();
 
@@ -90,6 +102,7 @@ namespace AlumniProject.Service.ServiceImp
                                 (gradeIdList.Contains(e.GradeId) ||
                                 (e.SchoolId == schoolId && e.IsPublicSchool == true)) &&
                                 e.Archived == true);
+                await _redisService.SetObjectAsync("Event:alumniId:" + alumniId, eventsList);
                 return eventsList;
             }
             return new PagingResultDTO<Events>();
@@ -97,9 +110,13 @@ namespace AlumniProject.Service.ServiceImp
 
         public async Task<PagingResultDTO<Events>> GetEventsBySchoolIdIdWithoutCondition(int pageNo, int pageSize, int schoolId)
         {
-
+            var cachedEvent = await _redisService.GetObjectAsync<PagingResultDTO<Events>>("Event:SchoolId:" + schoolId.ToString());
+            if (cachedEvent != null)
+            {
+                return cachedEvent;
+            }
             var eventsList = await _repo.GetAllByConditionAsync(pageNo, pageSize, e => e.SchoolId == schoolId && e.Archived == true);
-
+            await _redisService.SetObjectAsync("Event:SchoolId:" + schoolId, eventsList);
             //var result = new PagingResultDTO<Events>()
             //{
             //    TotalItems = total,
@@ -126,6 +143,11 @@ namespace AlumniProject.Service.ServiceImp
             events.EndTime = updateEvents.EndTime;
             events.IsPublicSchool = updateEvents.IsPublicSchool;
             await _repo.UpdateAsync(events);
+            var cachedEvent = await _redisService.GetObjectAsync<Events>("Event:" + updateEvents.Id.ToString());
+            await _redisService.DeleteAsync("Event:" + updateEvents.Id.ToString());
+            await _redisService.DeleteAsync("Event:SchoolId" + updateEvents.SchoolId.ToString());
+            await _redisService.DeleteAsync("Event:AlumniId:*");
+
             return events;
         }
 
@@ -167,7 +189,6 @@ namespace AlumniProject.Service.ServiceImp
 
         public async Task<IEnumerable<Events>> GetLatestEvent(int size, int schoolId)
         {
-
             var eventsList = await _repo.GetAllByConditionAsync(e => ((e.SchoolId == schoolId && e.IsPublicSchool) == true) && e.Archived == true);
             return eventsList.OrderByDescending(e => e.CreatedAt).Take(size);
         }

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace AlumniProject.Ultils
 {
-    public  class TokenHelper
+    public class TokenHelper
     {
         private readonly IGradeService _gradeService;
         private readonly IRoleService _roleService;
@@ -29,7 +29,6 @@ namespace AlumniProject.Ultils
                 new Claim(Constant.AlumniId, alumni.Id.ToString()),
                 new Claim(Constant.SchoolId,schoolIdValue),
                 new Claim(ClaimTypes.Role, role.Name)
-
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
@@ -47,5 +46,40 @@ namespace AlumniProject.Ultils
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
             return jwt;
         }
+        public void DecodeJwtToken(string jwtToken)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            // Set the token validation parameters
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("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")) // Replace with your secret key
+            };
+
+            try
+            {
+                // Decode and validate the JWT token
+                var claimsPrincipal = tokenHandler.ValidateToken(jwtToken, validationParameters, out var validatedToken);
+
+                // Access the claims from the token
+                var claims = claimsPrincipal.Claims;
+
+                foreach (var claim in claims)
+                {
+                    Console.WriteLine($"{claim.Type}: {claim.Value}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to decode JWT token: {ex.Message}");
+            }
+        }
+
     }
+
+
 }
