@@ -7,6 +7,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml;
 using System.ComponentModel.DataAnnotations;
 
 namespace AlumniProject.Controllers
@@ -18,12 +19,14 @@ namespace AlumniProject.Controllers
         private readonly IGradeService service;
         private readonly IMapper mapper;
         private readonly TokenUltil tokenUltil;
+        private readonly IClassService classService;
 
-        public GradeController(IGradeService gradeService, IMapper mapper)
+        public GradeController(IGradeService gradeService, IMapper mapper, IClassService classService)
         {
             this.service = gradeService;
             this.mapper = mapper;
             tokenUltil = new TokenUltil();
+            this.classService = classService;
         }
 
 
@@ -238,5 +241,74 @@ namespace AlumniProject.Controllers
                 }
             }
         }
+        [HttpPost("tenant/grades/file")]
+        public async Task<ActionResult<int>> AddClassFromFile(IFormFile file)
+        {
+            await ReadExcelFile(file);
+            return Ok();
+        }
+        private async Task ReadExcelFile(IFormFile file)
+        {
+            if (file.ContentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" &&
+                Path.GetExtension(file.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
+            {
+                //var schoolId = tokenUltil.GetClaimByType(User, Constant.SchoolId).Value;
+                using (var stream = new MemoryStream())
+                {
+                    file.CopyTo(stream);
+                    ExcelPackage.LicenseContext = LicenseContext.Commercial;
+                    using (var excelPackage = new ExcelPackage(stream))
+                    {
+                        ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets[0];
+
+                        int rowCount = worksheet.Dimension.Rows;
+                        int colCount = worksheet.Dimension.Columns;
+
+
+
+                        for (int row = 2; row <= rowCount; row++)
+                        {
+
+                            var code = worksheet.Cells[row, 2].Value?.ToString() ?? "";
+                            var endYear = worksheet.Cells[row, 3].Value?.ToString() ?? "";
+                            var grade = new Grade{
+                                Code = code,
+                                EndYear = Int32.Parse(endYear),
+                                StartYear = Int32.Parse(endYear) - 3,
+                                CreatedAt = DateTime.Now,
+                                SchoolId = 3
+                            };
+                            var gradeId = await service.CreateGrade(grade);
+                            List<AlumniClass> classes = new List<AlumniClass> ();
+                            for (int col = 4; col <= colCount; col++)
+                            {
+                                var cellValue = worksheet.Cells[row, col].Value?.ToString() ?? "";
+                                if (cellValue != "")
+                                {
+                                    //classes.Add(new AlumniClass
+                                    //{
+                                    //    Name = cellValue,
+                                    //    GradeId = gradeId,
+                                    //    CreatedAt = DateTime.Now,
+                                    //});
+                                    await classService.CreateClass(new AlumniClass
+                                    {
+                                        Name = cellValue,
+                                        GradeId = gradeId,
+                                        CreatedAt = DateTime.Now,
+                                    });
+                                }
+                                //await classService.CreateClassRange(classes);
+                            }
+
+                        }
+                    }
+                }
+            }
+            else
+            {
+            }
+        }
     }
 }
+

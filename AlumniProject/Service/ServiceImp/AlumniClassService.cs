@@ -41,6 +41,16 @@ public class AlumniClassService : IClassService
         return newClassId;
     }
 
+    public async Task CreateClassRange(List<AlumniClass> alumniClass)
+    {
+        //foreach (var alumniClassItem in alumniClass)
+        //{
+        //    await ValidateClass(alumniClassItem.GradeId, alumniClassItem.Name);
+        //}
+
+        await repo.CreateRangeAsync(alumniClass);
+    }
+
     public async Task<AlumniClass> GetClassById(int id)
     {
         var classById = await repo.GetByIdAsync(c=> c.Id == id, c =>c.Archived == true);

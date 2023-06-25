@@ -26,6 +26,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContextPool<AlumniDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("userDb"))
 );
+builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
+policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
 builder.Services.AddTransient<RedisService>(provider =>
 {
     var configuration = provider.GetRequiredService<IConfiguration>();
@@ -93,7 +95,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
              .GetBytes(builder.Configuration.GetSection("Token:secret").Value)),
-            ValidateIssuer = false,
+            ValidateIssuer = false,   
             ValidateAudience = false,
 
         };

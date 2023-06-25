@@ -33,6 +33,11 @@ namespace AlumniProject.Data.Repostitory.RepositoryImp
             var id = (int)_context.Entry(entity).Property("Id").CurrentValue;
             return id;
         }
+        public async Task CreateRangeAsync(List<T> entities)
+        {
+            await _context.Set<T>().AddRangeAsync(entities);
+            await _context.SaveChangesAsync();
+        }
 
         public async Task DeleteByIdAsync(int id)
         {

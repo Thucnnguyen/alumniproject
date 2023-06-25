@@ -6,6 +6,7 @@ namespace AlumniProject.Service;
 public interface IClassService 
 {
     Task<int> CreateClass(AlumniClass alumniClass);
+    Task CreateClassRange(List<AlumniClass> alumniClass);
     Task<AlumniClass> GetClassById(int id);
     Task<IEnumerable<AlumniClass>> GetClassByGradeId(int gradeId);
 
